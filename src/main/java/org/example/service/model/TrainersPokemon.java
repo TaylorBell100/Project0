@@ -1,12 +1,13 @@
 package org.example.service.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class TrainersPokemon {
     private Integer id;
     private Boolean seen;
-    private LocalDateTime dateObtained;
+    private LocalDate dateObtained;
     private String nickname;
     private Integer partySlot;
     private Pokemon pokemon;
@@ -45,6 +46,14 @@ public class TrainersPokemon {
         this.id = id;
     }
 
+    public Integer getPartySlot() {
+        return partySlot;
+    }
+
+    public void setPartySlot(Integer id) {
+        this.partySlot = id;
+    }
+
     public String getNickname() {
         return nickname;
     }
@@ -67,11 +76,11 @@ public class TrainersPokemon {
 
     public void setTrainer(Trainer trainer){this.trainer = trainer;}
 
-    public LocalDateTime getDateObtained(){return dateObtained;}
+    public LocalDate getDateObtained(){return dateObtained;}
 
-    public void setDateObtained(){dateObtained = LocalDateTime.now();}
+    public void setDateObtained(LocalDate s){dateObtained = s;}
 
-    public TrainersPokemon(Integer id, Boolean seen, LocalDateTime dateObtained, String nickname, Integer partySlot, Trainer trainer, Pokemon pokemon) {
+    public TrainersPokemon(Integer id, Boolean seen, LocalDate dateObtained, String nickname, Integer partySlot, Trainer trainer, Pokemon pokemon) {
         this.id = id;
         this.seen = seen;
         this.dateObtained = dateObtained;

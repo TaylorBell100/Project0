@@ -13,10 +13,26 @@ import java.util.List;
 import java.util.Optional;
 
 public class TrainersPokemonService {
-    private TrainersPokemonDAO trainersPokemonDAO = new TrainersPokemonDAO();
+    private TrainersPokemonDAO trainersPokemonDAO;
 
-    private TrainerService trainerService = new TrainerService();
-    private PokemonService pokemonService = new PokemonService();
+    private TrainerService trainerService;
+    private PokemonService pokemonService;
+
+    // Constructor injection
+    public TrainersPokemonService(
+            TrainersPokemonDAO trainersPokemonDAO,
+            TrainerService trainerService,
+            PokemonService pokemonService) {
+
+        this.trainersPokemonDAO = trainersPokemonDAO;
+        this.trainerService = trainerService;
+        this.pokemonService = pokemonService;
+    }
+
+    public TrainersPokemonService(){
+        this(new TrainersPokemonDAO(),new TrainerService(), new PokemonService());
+    }
+
 
     public TPCompositeKey createEntity(TrainersPokemonEntity entity) {
         try{
@@ -50,14 +66,6 @@ public class TrainersPokemonService {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public TrainersPokemonEntity updateEntity(Integer id, TrainersPokemonEntity newEntity) {
-        return null;
-    }
-
-    public boolean deleteEntity(Integer id) {
-        return false;
     }
 
     public int catchPokemon(TrainersPokemonEntity entity){

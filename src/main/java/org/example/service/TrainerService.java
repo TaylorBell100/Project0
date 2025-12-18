@@ -54,10 +54,6 @@ public class TrainerService {
         }
     }
 
-    public boolean deleteEntity(Integer id) {
-        return false;
-    }
-
     public Optional<Trainer> convertEntityToModel(TrainerEntity entity) {
 
         Trainer trainer = new Trainer();

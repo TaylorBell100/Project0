@@ -11,6 +11,9 @@ import org.example.service.model.Pokemon;
 import org.example.service.model.Trainer;
 import org.example.service.model.TrainersPokemon;
 import org.example.util.InputHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TrainerController {
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
     private final TrainersPokemonService trainersPokemonService = new TrainersPokemonService();
     private final PokemonService pokemonService = new PokemonService();
     private final TrainerService trainerService = new TrainerService();
@@ -42,7 +46,10 @@ public class TrainerController {
                 case 0 -> {
                     System.out.println("Leaving Trainer Services");
                     running = false; }
-                default -> System.out.println("Invalid choice");
+                default -> {
+                    System.out.println("Invalid choice"); logger.warn("Invalid menu choice entered by user: {}", choice);
+                }
+
             }
         }
     }
@@ -85,6 +92,7 @@ public class TrainerController {
         Optional<TrainerEntity> trainer = trainerService.getEntityById(trainerId);
         ArrayList<TrainerEntity> trainerList = new ArrayList<>();
 
+        logger.debug("Fetching trainer with ID: {}", trainerId);
         if (trainer.isPresent()){
             trainerList.add(trainer.get());
         }
@@ -105,9 +113,11 @@ public class TrainerController {
         trainerEntity.setName(trainerName);
         trainerEntity.setRegion(region);
 
+        logger.info("Adding new trainer with name '{}' and region '{}'", trainerName, region);
         Integer trainer = trainerService.createEntity(trainerEntity);
 
         if (trainer != 0){
+            logger.info("Trainer created successfully with ID: {}", trainer);
             System.out.println("Success! Your Trainder ID is: " + trainer);
         }
     }//add trainer
@@ -120,7 +130,7 @@ public class TrainerController {
 
         Optional<Pokemon> pokemonOpt;
 
-        // 🔍 Determine whether pid is numeric (National ID) or name
+        // Determine whether pid is numeric (National ID) or name
         if (pid.matches("\\d+")) {
             int nid = Integer.parseInt(pid);
             pokemonOpt = pokemonService.getModelById(nid);
@@ -128,8 +138,9 @@ public class TrainerController {
             pokemonOpt = pokemonService.getModelByName(pid);
         }
 
-        // ❌ Pokémon not found
+        // Pokémon not found
         if (pokemonOpt.isEmpty()) {
+            logger.warn("Pokémon not found for input '{}'", pid);
             System.out.println("Pokémon not found.");
             return;
         }
@@ -138,6 +149,7 @@ public class TrainerController {
         int nid = pokemon.getId();
         String pokemonName = pokemon.getName();
 
+        logger.info("Changing nickname of Pokémon ID {} for trainer ID {} to '{}'", nid, tid, newNickname);
         int updated = trainerService.updateNickname(tid, nid, newNickname);
 
         if (updated == 1) {
@@ -156,7 +168,7 @@ public class TrainerController {
 
         Optional<Pokemon> pokemonOpt;
 
-        // 🔍 Determine whether pid is numeric (National ID) or name
+        //  Determine whether pid is numeric (National ID) or name
         if (pid.matches("\\d+")) {
             int nid = Integer.parseInt(pid);
             pokemonOpt = pokemonService.getModelById(nid);
@@ -164,7 +176,7 @@ public class TrainerController {
             pokemonOpt = pokemonService.getModelByName(pid);
         }
 
-        // ❌ Pokémon not found
+        //  Pokémon not found
         if (pokemonOpt.isEmpty()) {
             System.out.println("Pokémon not found.");
             return;
@@ -174,6 +186,7 @@ public class TrainerController {
         int nid = pokemon.getId();
         String pokemonName = pokemon.getName();
 
+        logger.info("Adding Pokémon '{}' (ID {}) to trainer {} slot {}", pokemonName, nid, tid, slot);
         int updated = trainerService.addToParty(tid, nid, slot);
 
         if (updated == 1) {
@@ -210,6 +223,7 @@ public class TrainerController {
         }
         trainerEntity.setId(tid);
 
+        logger.info("Updating trainer ID {}: name='{}', region='{}'", tid, trainerName, region);
         Integer trainer = trainerService.updateEntity(trainerEntity);
 
         if (trainer != 0){
@@ -249,7 +263,7 @@ public class TrainerController {
 
         Optional<Pokemon> pokemonOpt;
 
-        // 🔍 Determine whether pid is numeric (National ID) or name
+        // Determine whether pid is numeric (National ID) or name
         if (pid.matches("\\d+")) {
             int nid = Integer.parseInt(pid);
             pokemonOpt = pokemonService.getModelById(nid);
@@ -257,7 +271,7 @@ public class TrainerController {
             pokemonOpt = pokemonService.getModelByName(pid);
         }
 
-        // ❌ Pokémon not found
+        //  Pokémon not found
         if (pokemonOpt.isEmpty()) {
             System.out.println("Pokémon not found.");
             return;
@@ -267,6 +281,7 @@ public class TrainerController {
         int nid = pokemon.getId();
         String pokemonName = pokemon.getName();
 
+        logger.info("Removing Pokémon '{}' (ID {}) from trainer {}", pokemonName, nid, tid);
         int updated = trainerService.removeFromParty(tid, nid);
 
         if (updated == 1) {
@@ -310,6 +325,7 @@ public class TrainerController {
             } else if(trainer.isPresent()){
                     running = false;
             } else{
+                logger.warn("Invalid Trainer ID entered: {}", trainerId);
                 System.out.println("Invalid Trainer ID");
             }
         }//while running

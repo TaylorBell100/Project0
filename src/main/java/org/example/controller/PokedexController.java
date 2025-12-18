@@ -8,13 +8,18 @@ import org.example.service.model.Pokemon;
 import org.example.service.model.Trainer;
 import org.example.service.model.TrainersPokemon;
 import org.example.util.InputHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+
 public class PokedexController {
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
+
     private final TrainersPokemonService trainersPokemonService = new TrainersPokemonService();
     private final PokemonService pokemonService = new PokemonService();
     private final TrainerService trainerService = new TrainerService();
@@ -45,8 +50,10 @@ public class PokedexController {
     private void validateTrainerId(Integer i){
         Optional<Trainer> trainer = trainerService.getModelById(i);
         if(trainer.isPresent()){
+            logger.info("Valid trainerID entered: {}",i);
             handleInput1();
         }else{
+            logger.warn("Invalid trainerID entered: {}",i);
             System.out.println("Invalid Trainer ID");
         }
     }
@@ -219,16 +226,20 @@ public class PokedexController {
                 int result = trainersPokemonService.releasePokemon(trainersPokemonEntity);
 
                 if(result == 0){
+                    logger.info("Trainer {} failed to release {}",trainerId,pokemon.get().getName());
                     System.out.println("Unable to release pokemon.");
                 }else{
+                    logger.info("Trainer {} released {}",trainerId,pokemon.get().getName());
                     System.out.println("Goodbye " + pokemon.get().getName() +"!");
                 }
             }else{
                 System.out.println("Review your pokemon's info and try again!");
+                logger.warn("Attempted to release what they didnt have");
             }//ifelse pokemonpresent
 
         }else{
             System.out.println("Trainer ID is invalid.");
+            logger.warn("Invalid traider ID: {}",trainerId);
         }//ifelse trainer
     }//release
 
@@ -305,6 +316,11 @@ public class PokedexController {
         //the int i parameter tell me if we are looking for id input or name input
         Optional<Trainer> trainer = trainerService.getModelById(trainerId);
 
+        if(trainer.isEmpty()){
+            logger.warn("Invalid TID: {}",trainerId);
+            return;
+        }
+
         Optional<Pokemon> pokemon;
         if (trainer.isPresent()){
             if (i == 1) {
@@ -332,11 +348,14 @@ public class PokedexController {
                 int result = trainersPokemonService.catchPokemon(trainersPokemonEntity);
 
                 if(result == 0){
+                    logger.info("Trainer {}, has already caught {}",trainerId,pokemon.get().getName());
                     System.out.println("Pokemon already caught.");
                 }else{
+                    logger.info("Trainer {}, has caught {}",trainerId,pokemon.get().getName());
                     System.out.println("You caught a " + pokemon.get().getName() +"!");
                 }
             }else{
+                logger.warn("Pokemon info entered was invalid.");
                 System.out.println("Pokemon name is invalid");
             }//ifelse pokemon
 
@@ -363,7 +382,9 @@ public class PokedexController {
                     nickName = InputHandler.getStringInput("Enter a nickname: ");
                     try {
                         trainerService.updateNickname(trainersPokemonEntity.getTrainerId(), trainersPokemonEntity.getPokemonId(), nickName);
+                        logger.info("Trainer {} updated nickname for pokemon {} to {}.", trainersPokemonEntity.getTrainerId(),trainersPokemonEntity.getPokemonId(),nickName);
                     } catch (SQLException e) {
+                        logger.info("Failed to update nickname for trainer {}, pokemon {}.", trainersPokemonEntity.getTrainerId(),trainersPokemonEntity.getPokemonId(),e);
                         throw new RuntimeException(e);
                     }
                     running = false;
