@@ -164,18 +164,4 @@ public class TrainersPokemonService {
         return trainersPokemons;
     }
 
-    public List<TrainersPokemon> getAllModelsByTrainer(Trainer trainer) {
-        List<TrainersPokemonEntity> trainersPokemonEntities = getAllEntitiesByTrainerId(trainer.getId());
-        List<TrainersPokemon> trainersPokemons = new ArrayList<>();
-        for(TrainersPokemonEntity entity : trainersPokemonEntities){
-            Optional<TrainersPokemon> trainersPokemon = convertEntityToModel(entity);
-            if(trainersPokemon.isPresent()){
-                trainersPokemons.add(trainersPokemon.get());
-            }
-        }
-        return trainersPokemons;
-
-
-    }
-
 }//class

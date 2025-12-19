@@ -113,11 +113,11 @@ public class TrainerController {
         trainerEntity.setName(trainerName);
         trainerEntity.setRegion(region);
 
-        logger.info("Adding new trainer with name '{}' and region '{}'", trainerName, region);
+        logger.debug("Adding new trainer with name '{}' and region '{}'", trainerName, region);
         Integer trainer = trainerService.createEntity(trainerEntity);
 
         if (trainer != 0){
-            logger.info("Trainer created successfully with ID: {}", trainer);
+            logger.debug("Trainer created successfully with ID: {}", trainer);
             System.out.println("Success! Your Trainder ID is: " + trainer);
         }
     }//add trainer
@@ -149,7 +149,7 @@ public class TrainerController {
         int nid = pokemon.getId();
         String pokemonName = pokemon.getName();
 
-        logger.info("Changing nickname of Pokémon ID {} for trainer ID {} to '{}'", nid, tid, newNickname);
+        logger.debug("Changing nickname of Pokémon ID {} for trainer ID {} to '{}'", nid, tid, newNickname);
         int updated = trainerService.updateNickname(tid, nid, newNickname);
 
         if (updated == 1) {
@@ -186,7 +186,7 @@ public class TrainerController {
         int nid = pokemon.getId();
         String pokemonName = pokemon.getName();
 
-        logger.info("Adding Pokémon '{}' (ID {}) to trainer {} slot {}", pokemonName, nid, tid, slot);
+        logger.debug("Adding Pokémon '{}' (ID {}) to trainer {} slot {}", pokemonName, nid, tid, slot);
         int updated = trainerService.addToParty(tid, nid, slot);
 
         if (updated == 1) {
@@ -223,7 +223,7 @@ public class TrainerController {
         }
         trainerEntity.setId(tid);
 
-        logger.info("Updating trainer ID {}: name='{}', region='{}'", tid, trainerName, region);
+        logger.debug("Updating trainer ID {}: name='{}', region='{}'", tid, trainerName, region);
         Integer trainer = trainerService.updateEntity(trainerEntity);
 
         if (trainer != 0){
@@ -281,7 +281,7 @@ public class TrainerController {
         int nid = pokemon.getId();
         String pokemonName = pokemon.getName();
 
-        logger.info("Removing Pokémon '{}' (ID {}) from trainer {}", pokemonName, nid, tid);
+        logger.debug("Removing Pokémon '{}' (ID {}) from trainer {}", pokemonName, nid, tid);
         int updated = trainerService.removeFromParty(tid, nid);
 
         if (updated == 1) {
@@ -292,6 +292,7 @@ public class TrainerController {
     }
 
     private void printMenu(){
+        System.out.println("========================");
         System.out.println("=== Trainer SERVICES ===");
         System.out.println("1. Register New Trainer");
         System.out.println("2. Get Trainer by ID");
@@ -307,6 +308,7 @@ public class TrainerController {
     }
 
     private void printUpdateOptions(){
+        System.out.println("======================");
         System.out.println("=== Trainer Fields ===");
         System.out.println("1. Update Name");
         System.out.println("2. Update Region");
@@ -318,7 +320,8 @@ public class TrainerController {
         boolean running = true;
         Integer trainerId = 0;
         while(running){
-            trainerId = InputHandler.getIntInput("Please enter a valid TrainerID or 0 to cancel: ");
+            System.out.println                            ("===============================================");
+            trainerId = InputHandler.getIntInput(   "Please enter a valid TrainerID or 0 to cancel: ");
             Optional<Trainer> trainer = trainerService.getModelById(trainerId);
             if (trainerId == 0) {
                 running = false;

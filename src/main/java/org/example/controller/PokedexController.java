@@ -43,6 +43,7 @@ public class PokedexController {
     }//handleinput0
 
     private void printMenu0(){
+        System.out.println("========================");
         System.out.println("=== POKEDEX SERVICES ===");
         System.out.println("Enter 0 to exit.");
     }
@@ -50,7 +51,7 @@ public class PokedexController {
     private void validateTrainerId(Integer i){
         Optional<Trainer> trainer = trainerService.getModelById(i);
         if(trainer.isPresent()){
-            logger.info("Valid trainerID entered: {}",i);
+            logger.debug("Valid trainerID entered: {}",i);
             handleInput1();
         }else{
             logger.warn("Invalid trainerID entered: {}",i);
@@ -105,6 +106,7 @@ public class PokedexController {
     }//handle input1
 
     private void printMenu1(){
+        System.out.println("========================");
         System.out.println("=== POKEDEX SERVICES ===");
         System.out.println("1. Search All Pokemon");
         System.out.println("2. Search Pokemon by Unseen");
@@ -150,7 +152,6 @@ public class PokedexController {
     private String handleInput2(Integer i) {
         String x = "";
         String y = "";
-        System.out.println(i);
         switch (i){
             case 2 -> {
                 y = "Please enter a Region: ";
@@ -189,6 +190,7 @@ public class PokedexController {
     }//handle search all
 
     private void printPokemonStateMenu(){
+        System.out.println("============================");
         System.out.println("=== UPDATE POKEMON STATE ===");
         System.out.println("1. Seen new Pokemon");
         System.out.println("2. Catch new Pokemon");
@@ -226,10 +228,10 @@ public class PokedexController {
                 int result = trainersPokemonService.releasePokemon(trainersPokemonEntity);
 
                 if(result == 0){
-                    logger.info("Trainer {} failed to release {}",trainerId,pokemon.get().getName());
+                    logger.debug("Trainer {} failed to release {}",trainerId,pokemon.get().getName());
                     System.out.println("Unable to release pokemon.");
                 }else{
-                    logger.info("Trainer {} released {}",trainerId,pokemon.get().getName());
+                    logger.debug("Trainer {} released {}",trainerId,pokemon.get().getName());
                     System.out.println("Goodbye " + pokemon.get().getName() +"!");
                 }
             }else{
@@ -348,10 +350,10 @@ public class PokedexController {
                 int result = trainersPokemonService.catchPokemon(trainersPokemonEntity);
 
                 if(result == 0){
-                    logger.info("Trainer {}, has already caught {}",trainerId,pokemon.get().getName());
+                    logger.debug("Trainer {}, has already caught {}",trainerId,pokemon.get().getName());
                     System.out.println("Pokemon already caught.");
                 }else{
-                    logger.info("Trainer {}, has caught {}",trainerId,pokemon.get().getName());
+                    logger.debug("Trainer {}, has caught {}",trainerId,pokemon.get().getName());
                     System.out.println("You caught a " + pokemon.get().getName() +"!");
                 }
             }else{
@@ -372,6 +374,7 @@ public class PokedexController {
         String pokemonName = pokemon.get().getName();
 
         while(running) {
+            System.out.println("================");
             System.out.println("=== NICKNAME ===");
             System.out.println("Would you like to give a nickname to your newly caught " + pokemonName + "?");
             System.out.println("1. Yes");
@@ -382,9 +385,9 @@ public class PokedexController {
                     nickName = InputHandler.getStringInput("Enter a nickname: ");
                     try {
                         trainerService.updateNickname(trainersPokemonEntity.getTrainerId(), trainersPokemonEntity.getPokemonId(), nickName);
-                        logger.info("Trainer {} updated nickname for pokemon {} to {}.", trainersPokemonEntity.getTrainerId(),trainersPokemonEntity.getPokemonId(),nickName);
+                        logger.debug("Trainer {} updated nickname for pokemon {} to {}.", trainersPokemonEntity.getTrainerId(),trainersPokemonEntity.getPokemonId(),nickName);
                     } catch (SQLException e) {
-                        logger.info("Failed to update nickname for trainer {}, pokemon {}.", trainersPokemonEntity.getTrainerId(),trainersPokemonEntity.getPokemonId(),e);
+                        logger.debug("Failed to update nickname for trainer {}, pokemon {}.", trainersPokemonEntity.getTrainerId(),trainersPokemonEntity.getPokemonId(),e);
                         throw new RuntimeException(e);
                     }
                     running = false;
@@ -393,28 +396,5 @@ public class PokedexController {
                 default -> {}
             }//switch
         }//while running
-    }
-
-// methods that I decided I didnt need
-
-    private void getAllTrainersPokemonsByTrainer() {
-        String trainerName = InputHandler.getStringInput("What is the trainer name?");
-        Optional<Trainer> trainer = trainerService.getModelByTrainerName(trainerName);
-        if(trainer.isPresent()){
-
-            List<TrainersPokemon> trainersPokemons = trainersPokemonService.getAllModelsByTrainer(trainer.get());
-            for(TrainersPokemon trainersPokemon: trainersPokemons){
-                System.out.println(trainersPokemon);
-            }
-        }else{
-            System.out.println("Invalid Trainer Name");
-        }
-    }
-
-    private void getAllTrainersPokemons() {
-        List<TrainersPokemon> trainersPokemons = trainersPokemonService.getAllModels();
-        for(TrainersPokemon trainersPokemon: trainersPokemons){
-            System.out.println(trainersPokemon);
-        }
     }
 }//class

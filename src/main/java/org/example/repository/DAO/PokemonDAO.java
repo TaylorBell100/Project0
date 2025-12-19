@@ -23,7 +23,7 @@ public class PokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
-                    logger.info("Executing query statement.");
+                    logger.debug("Executing query statement.");
                     PokemonEntity pokemon = new PokemonEntity();
                     pokemon.setId(rs.getInt("nid"));
                     pokemon.setName(rs.getString("name"));
@@ -45,7 +45,7 @@ public class PokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
-                    logger.info("Executing query statement.");
+                    logger.debug("Executing query statement.");
                     PokemonEntity pokemon = new PokemonEntity();
                     pokemon.setId(rs.getInt("nid"));
                     pokemon.setName(rs.getString("name"));
@@ -73,7 +73,7 @@ public class PokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    logger.info("Executing query statement.");
+                    logger.debug("Executing query statement.");
                     PokemonEntity pokemon = new PokemonEntity();
                     pokemon.setId(rs.getInt("nid"));
                     pokemon.setName(rs.getString("name"));
@@ -293,7 +293,7 @@ public class PokemonDAO {
                 System.out.println("Something broke within PokemonDAO.");
             }
         }//switch
-        logger.info("Prepared input with case: {}.", i);
+        logger.debug("Prepared input with case: {}.", i);
         return sql;
     }//prepare input
 
@@ -303,7 +303,7 @@ public class PokemonDAO {
         //preparing for input sanitization
         x += " ";
         int tempInt = 0;
-        logger.info("Preparing output with case: {}.", i);
+        logger.debug("Preparing output with case: {}.", i);
         //switch for each type of user search
         switch (i){
             case 1 -> {

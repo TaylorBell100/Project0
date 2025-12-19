@@ -32,7 +32,7 @@ public class TrainersPokemonDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    logger.info("Executing query statement.");
+                    logger.debug("Executing query statement.");
                     return new TPCompositeKey(rs.getInt("tid"), rs.getInt("nid"));
                 }
             }
@@ -50,7 +50,7 @@ public class TrainersPokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
-                    logger.info("Executing query statement.");
+                    logger.debug("Executing query statement.");
                     TrainersPokemonEntity trainersPokemon = new TrainersPokemonEntity();
                     trainersPokemon.setTrainerId(rs.getInt("tid"));
                     trainersPokemon.setPokemonId(rs.getInt("nid"));
@@ -78,7 +78,7 @@ public class TrainersPokemonDAO {
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
-                logger.info("Executing query statement.");
+                logger.debug("Executing query statement.");
                 TrainersPokemonEntity trainersPokemon = new TrainersPokemonEntity();
                 trainersPokemon.setNickname(rs.getString("nickname"));
                 trainersPokemon.setTrainerId(rs.getInt("tid"));
@@ -106,7 +106,7 @@ public class TrainersPokemonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                logger.info("Executing query statement.");
+                logger.debug("Executing query statement.");
                 TrainersPokemonEntity trainersPokemon = new TrainersPokemonEntity();
                 trainersPokemon.setNickname(rs.getString("nickname"));
                 trainersPokemon.setTrainerId(rs.getInt("tid"));
@@ -132,7 +132,7 @@ public class TrainersPokemonDAO {
 
             stmt.setInt(1, entity.getTrainerId());
             stmt.setInt(2, entity.getPokemonId());
-            logger.info("Executing query statement.");
+            logger.debug("Executing query statement.");
             return stmt.executeUpdate();
         }//try stmt
     }//see pokemon
@@ -145,7 +145,7 @@ public class TrainersPokemonDAO {
 
             stmt.setInt(1, entity.getTrainerId());
             stmt.setInt(2, entity.getPokemonId());
-            logger.info("Executing query statement.");
+            logger.debug("Executing query statement.");
             return stmt.executeUpdate();
         }//try stmt
     }//see pokemon
@@ -157,7 +157,7 @@ public class TrainersPokemonDAO {
 
             stmt.setInt(1, entity.getTrainerId());
             stmt.setInt(2, entity.getPokemonId());
-            logger.info("Executing query statement.");
+            logger.debug("Executing query statement.");
             return stmt.executeUpdate();
         }//try stmt
     }//release

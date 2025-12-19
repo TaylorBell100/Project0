@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.controller.PokedexController;
 import org.example.repository.DAO.PokemonDAO;
+import org.example.repository.DAO.TrainerDAO;
 import org.example.repository.entities.PokemonEntity;
 import org.example.service.model.Pokemon;
 import org.slf4j.Logger;
@@ -13,8 +14,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class PokemonService {
-    private PokemonDAO pokemonDAO = new PokemonDAO();
+    private PokemonDAO pokemonDAO;
     private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
+
+    // Constructor injection
+    public PokemonService(PokemonDAO pokemonDAO) {
+        this.pokemonDAO = pokemonDAO;
+    }
+
+    public PokemonService(){
+        this(new PokemonDAO());
+    }
 
     public Optional<PokemonEntity> getEntityById(Integer id) {
         try{

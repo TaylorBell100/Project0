@@ -27,7 +27,7 @@ public class TrainerDAO {
             stmt.setString(2, trainerEntity.getRegion());
 
             try(ResultSet rs = stmt.executeQuery()){
-                logger.info("Executing query statement.");
+                logger.debug("Executing query statement.");
                 if(rs.next()){
                     return rs.getInt("tid");
                 }
@@ -58,7 +58,7 @@ public class TrainerDAO {
 
             while (rs.next()) {
                 Integer tid = rs.getInt("tid");
-                logger.info("Executing query statement.");
+                logger.debug("Executing query statement.");
 
                 if (lastTid == null || !tid.equals(lastTid)) {
                     // New trainer row
@@ -110,7 +110,7 @@ public class TrainerDAO {
             stmt.setInt(3, trainerEntity.getId());
 
             //returns 0 if you dont have that poke, and 1 if successful
-            logger.info("Executing query statement.");
+            logger.debug("Executing query statement.");
             return stmt.executeUpdate();
         }//try
     }//update by id
@@ -123,7 +123,7 @@ public class TrainerDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
-                    logger.info("Executing query statement.");
+                    logger.debug("Executing query statement.");
                     TrainerEntity trainerEntity = new TrainerEntity();
                     trainerEntity.setId(rs.getInt("tid"));
                     trainerEntity.setName(rs.getString("name"));
@@ -180,7 +180,7 @@ public class TrainerDAO {
             stmt.setInt(3, pokemonId);
 
             //returns 0 if you dont have that poke, and 1 if successful
-            logger.info("Executing query statement.");
+            logger.debug("Executing query statement.");
             return stmt.executeUpdate();
         }
     }//update nickname
@@ -200,7 +200,7 @@ public class TrainerDAO {
             stmt.setInt(2, trainerId);
             stmt.setInt(3, pokemonId);
 
-            logger.info("Executing query statement.");
+            logger.debug("Executing query statement.");
             return stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -224,7 +224,7 @@ public class TrainerDAO {
             stmt.setInt(1, trainerId);
             stmt.setInt(2, pokemonId);
 
-            logger.info("Executing query statement.");
+            logger.debug("Executing query statement.");
             return stmt.executeUpdate();
         }
     }//remove from Party

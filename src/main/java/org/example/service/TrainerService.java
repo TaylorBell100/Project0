@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.controller.PokedexController;
+import org.example.repository.DAO.TrainersPokemonDAO;
 import org.example.repository.entities.TrainerEntity;
 import org.example.service.model.Trainer;
 import org.example.repository.DAO.TrainerDAO;
@@ -14,8 +15,17 @@ import java.util.Optional;
 
 public class TrainerService {
 
-    private TrainerDAO trainerDAO = new TrainerDAO();
+    private TrainerDAO trainerDAO;
     private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
+
+    // Constructor injection
+    public TrainerService(TrainerDAO trainerDAO) {
+        this.trainerDAO = trainerDAO;
+    }
+
+    public TrainerService(){
+        this(new TrainerDAO());
+    }
 
     public Integer createEntity(TrainerEntity entity) {
         try{

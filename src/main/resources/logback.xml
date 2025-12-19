@@ -5,7 +5,7 @@
         </encoder>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+    <Root level="debug">
+        <AppenderRef ref="Console"/>
+    </Root>
 </configuration>

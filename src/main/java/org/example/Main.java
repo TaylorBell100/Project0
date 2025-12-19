@@ -12,8 +12,10 @@ public class Main {
 
         PokedexController pController = new PokedexController();
         TrainerController tController = new TrainerController();
-
+        System.out.println("===============================");
         System.out.println("=== NATIONAL POKEDEX SYSTEM ===");
+        System.out.println("===============================");
+        System.out.println("");
 
         boolean running = true;
         while(running){
@@ -34,6 +36,7 @@ public class Main {
     }//main method
 
     private static void printMenu(){
+        System.out.println("=================");
         System.out.println("=== MAIN MENU ===");
         System.out.println("1. Pokedex Services");
         System.out.println("2. Trainer Services");
