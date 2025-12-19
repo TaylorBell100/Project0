@@ -1,8 +1,11 @@
 package org.example.service;
 
+import org.example.controller.PokedexController;
 import org.example.repository.entities.TrainerEntity;
 import org.example.service.model.Trainer;
 import org.example.repository.DAO.TrainerDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,9 +15,11 @@ import java.util.Optional;
 public class TrainerService {
 
     private TrainerDAO trainerDAO = new TrainerDAO();
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
 
     public Integer createEntity(TrainerEntity entity) {
         try{
+            logger.debug("Using TrainerDAO to make new entry.");
             Integer newId = trainerDAO.create(entity);
             return newId;
         }catch(SQLException e){
@@ -25,6 +30,7 @@ public class TrainerService {
 
     public Optional<TrainerEntity> getEntityById(Integer id) {
         try{
+            logger.debug("Using TrainerDAO to find ID: {}",id);
             Optional<TrainerEntity> trainerEntity = trainerDAO.findById(id);
             if(trainerEntity.isEmpty()){
                 throw new RuntimeException("Trainer not found");
@@ -38,6 +44,7 @@ public class TrainerService {
 
     public List<TrainerEntity> getAllEntities() {
         try{
+            logger.debug("Using TrainerDAO to find all");
             List<TrainerEntity> trainerEntities = trainerDAO.findAll();
             return trainerEntities;
         }catch (SQLException e){
@@ -48,10 +55,58 @@ public class TrainerService {
 
     public Integer updateEntity(TrainerEntity newEntity) {
         try {
+            logger.debug("Using TrainerDAO to update");
             return trainerDAO.updateById(newEntity);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Optional<TrainerEntity> getEntityByTrainerName(String trainerName) {
+        try{
+            logger.debug("Using TrainerDAO to find by name: {}",trainerName);
+            Optional<TrainerEntity> trainerEntity = trainerDAO.findByTrainerName(trainerName);
+            return trainerEntity;
+        }catch (SQLException e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public List<TrainerEntity> getEntitiesByName(String name) {
+        try{
+            logger.debug("Using TrainerDAO to find by name: {}",name);
+            List<TrainerEntity> entities = trainerDAO.findAllByName(name);
+            return entities;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<TrainerEntity> getEntitiesByRegion(String name) {
+        try{
+            logger.debug("Using TrainerDAO to find by region: {}",name);
+            List<TrainerEntity> entities = trainerDAO.findAllByRegion(name);
+            return entities;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int updateNickname(int tid, int nid, String nickname) throws SQLException {
+        logger.debug("Using TrainerDAO to update nickname to {}",nickname);
+        return trainerDAO.updateNickname(tid,nid,nickname);
+    }
+
+    public int addToParty(int tid, int nid, int slot) throws SQLException {
+        logger.debug("Using TrainerDAO to add to party slot: {}",slot);
+        return trainerDAO.addToParty(tid,nid,slot);
+    }
+    public int removeFromParty(int tid,int nid) throws SQLException {
+        logger.debug("Using TrainerDAO to remove from party");
+        return trainerDAO.removeFromParty(tid,nid);
     }
 
     public Optional<Trainer> convertEntityToModel(TrainerEntity entity) {
@@ -103,16 +158,6 @@ public class TrainerService {
         }
     }
 
-    private Optional<TrainerEntity> getEntityByTrainerName(String trainerName) {
-        try{
-            Optional<TrainerEntity> trainerEntity = trainerDAO.findByTrainerName(trainerName);
-            return trainerEntity;
-        }catch (SQLException e){
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
-
     public List<Trainer> getAllModels() {
         List<TrainerEntity> trainerEntities = getAllEntities();
         List<Trainer> trainers = new ArrayList<>();
@@ -125,34 +170,4 @@ public class TrainerService {
         return trainers;
     }
 
-    public List<TrainerEntity> getEntitiesByName(String name) {
-        try{
-            List<TrainerEntity> entities = trainerDAO.findAllByName(name);
-            return entities;
-        }catch(SQLException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public List<TrainerEntity> getEntitiesByRegion(String name) {
-        try{
-            List<TrainerEntity> entities = trainerDAO.findAllByRegion(name);
-            return entities;
-        }catch(SQLException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public int updateNickname(int tid, int nid, String nickname) throws SQLException {
-        return trainerDAO.updateNickname(tid,nid,nickname);
-    }
-
-    public int addToParty(int tid, int nid, int slot) throws SQLException {
-        return trainerDAO.addToParty(tid,nid,slot);
-    }
-    public int removeFromParty(int tid,int nid) throws SQLException {
-        return trainerDAO.removeFromParty(tid,nid);
-    }
-}
+}//class

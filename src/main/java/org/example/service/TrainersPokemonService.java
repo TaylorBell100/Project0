@@ -1,11 +1,14 @@
 package org.example.service;
 
+import org.example.controller.PokedexController;
 import org.example.repository.DAO.TrainersPokemonDAO;
 import org.example.repository.entities.TPCompositeKey;
 import org.example.repository.entities.TrainersPokemonEntity;
 import org.example.service.model.Pokemon;
 import org.example.service.model.Trainer;
 import org.example.service.model.TrainersPokemon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,11 +21,10 @@ public class TrainersPokemonService {
     private TrainerService trainerService;
     private PokemonService pokemonService;
 
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
+
     // Constructor injection
-    public TrainersPokemonService(
-            TrainersPokemonDAO trainersPokemonDAO,
-            TrainerService trainerService,
-            PokemonService pokemonService) {
+    public TrainersPokemonService(TrainersPokemonDAO trainersPokemonDAO, TrainerService trainerService, PokemonService pokemonService) {
 
         this.trainersPokemonDAO = trainersPokemonDAO;
         this.trainerService = trainerService;
@@ -33,9 +35,9 @@ public class TrainersPokemonService {
         this(new TrainersPokemonDAO(),new TrainerService(), new PokemonService());
     }
 
-
     public TPCompositeKey createEntity(TrainersPokemonEntity entity) {
         try{
+            logger.debug("Using trainersPokemonDAO to create new entity");
             TPCompositeKey newId = trainersPokemonDAO.create(entity);
             return newId;
         }catch(SQLException e){
@@ -46,6 +48,7 @@ public class TrainersPokemonService {
 
     public Optional<TrainersPokemonEntity> getEntityById(TPCompositeKey id) {
         try{
+            logger.debug("Using trainersPokemonDAO to get party with id: {}", id);
             Optional<TrainersPokemonEntity> trainersPokemon = trainersPokemonDAO.findById(id);
             if(trainersPokemon.isEmpty()){
                 throw new RuntimeException("TrainersPokemon not found");
@@ -58,8 +61,8 @@ public class TrainersPokemonService {
     }
 
     public List<TrainersPokemonEntity> getAllEntities() {
-
         try{
+            logger.debug("Using trainersPokemonDAO to get all entities");
             List<TrainersPokemonEntity> trainersPokemonEntities = trainersPokemonDAO.findAll();
             return trainersPokemonEntities;
         }catch (SQLException e){
@@ -70,7 +73,39 @@ public class TrainersPokemonService {
 
     public int catchPokemon(TrainersPokemonEntity entity){
         try{
+            logger.debug("Using trainersPokemonDAO to catch a pokemon");
             return trainersPokemonDAO.catchPokemon(entity);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private List<TrainersPokemonEntity> getAllEntitiesByTrainerId(Integer trainerId) {
+        try{
+            logger.debug("Using trainersPokemonDAO to get party with: {}", trainerId);
+            List<TrainersPokemonEntity> trainersPokemonEntities = trainersPokemonDAO.findAllByTrainerId(trainerId);
+            return trainersPokemonEntities;
+        }catch(SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int seePokemon(TrainersPokemonEntity entity) {
+        try{
+            logger.debug("Using trainersPokemonDAO to see a pokemon");
+            return trainersPokemonDAO.seePokemon(entity);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int releasePokemon(TrainersPokemonEntity entity) {
+        try{
+            logger.debug("Using trainersPokemonDAO to release a pokemon");
+            return trainersPokemonDAO.releasePokemon(entity);
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -143,31 +178,4 @@ public class TrainersPokemonService {
 
     }
 
-    private List<TrainersPokemonEntity> getAllEntitiesByTrainerId(Integer trainerId) {
-        try{
-            List<TrainersPokemonEntity> trainersPokemonEntities = trainersPokemonDAO.findAllByTrainerId(trainerId);
-            return trainersPokemonEntities;
-        }catch(SQLException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public int seePokemon(TrainersPokemonEntity entity) {
-        try{
-            return trainersPokemonDAO.seePokemon(entity);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public int releasePokemon(TrainersPokemonEntity entity) {
-        try{
-            return trainersPokemonDAO.releasePokemon(entity);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        return 0;
-    }
 }//class

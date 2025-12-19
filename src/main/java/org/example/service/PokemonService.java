@@ -1,8 +1,11 @@
 package org.example.service;
 
+import org.example.controller.PokedexController;
 import org.example.repository.DAO.PokemonDAO;
 import org.example.repository.entities.PokemonEntity;
 import org.example.service.model.Pokemon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,9 +14,11 @@ import java.util.Optional;
 
 public class PokemonService {
     private PokemonDAO pokemonDAO = new PokemonDAO();
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
 
     public Optional<PokemonEntity> getEntityById(Integer id) {
         try{
+            logger.debug("Using PokemonDAO to find ID: {}",id);
             Optional<PokemonEntity> pokemonEntity = pokemonDAO.findById(id);
             if(pokemonEntity.isEmpty()){
                 throw new RuntimeException("Pokemon not found");
@@ -28,6 +33,7 @@ public class PokemonService {
     public List<PokemonEntity> getAllEntities(Integer i, String x) {
 
         try{
+            logger.debug("Using PokemonDAO to find all");
             List<PokemonEntity> pokeEntities = pokemonDAO.findAll(i, x);
             return pokeEntities;
         }catch(SQLException e){
@@ -37,8 +43,8 @@ public class PokemonService {
     }//getallentities
 
     public List<PokemonEntity> getAllEntitiesBySeen(Integer i, String x, Integer tid) {
-
         try{
+            logger.debug("Using PokemonDAO to find by seen with tid {}",tid);
             List<PokemonEntity> pokeEntities = pokemonDAO.findAllBySeen(i,x,tid);
             return pokeEntities;
         }catch(SQLException e){
@@ -48,8 +54,8 @@ public class PokemonService {
     }//getallentitiesbyseen
 
     public List<PokemonEntity> getAllEntitiesByUnseen(Integer i, String x, Integer tid) {
-
         try{
+            logger.debug("Using PokemonDAO to find by unseen with tid {}",tid);
             List<PokemonEntity> pokeEntities = pokemonDAO.findAllByUnseen(i,x,tid);
             return pokeEntities;
         }catch(SQLException e){
@@ -59,8 +65,8 @@ public class PokemonService {
     }//getallentitiesbyseen
 
     public List<PokemonEntity> getAllEntitiesByCaught(Integer i, String x, Integer tid) {
-
         try{
+            logger.debug("Using PokemonDAO to find by caught with tid {}",tid);
             List<PokemonEntity> pokeEntities = pokemonDAO.findAllByCaught(i,x,tid);
             return pokeEntities;
         }catch(SQLException e){
@@ -68,6 +74,20 @@ public class PokemonService {
             return null;
         }
     }//getallentitiesbycaught
+
+    private Optional<PokemonEntity> getEntityByName(String name) {
+        try{
+            logger.debug("Using PokemonDAO to find by name: {}",name);
+            Optional<PokemonEntity> pokeEntity = pokemonDAO.findByName(name);
+            if(pokeEntity.isEmpty()){
+                throw new RuntimeException("Pokemon not found");
+            }
+            return pokeEntity;
+        }catch(SQLException | RuntimeException e){
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
     public Optional<Pokemon> convertEntityToModel(PokemonEntity entity) {
         Pokemon poke = new Pokemon();
@@ -113,19 +133,6 @@ public class PokemonService {
                 throw new RuntimeException("PokemonEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
-            return Optional.empty();
-        }
-    }
-
-    private Optional<PokemonEntity> getEntityByName(String name) {
-        try{
-            Optional<PokemonEntity> pokeEntity = pokemonDAO.findByName(name);
-            if(pokeEntity.isEmpty()){
-                throw new RuntimeException("Pokemon not found");
-            }
-            return pokeEntity;
-        }catch(SQLException | RuntimeException e){
             e.printStackTrace();
             return Optional.empty();
         }
