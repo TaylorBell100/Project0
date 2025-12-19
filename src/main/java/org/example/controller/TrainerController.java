@@ -118,7 +118,7 @@ public class TrainerController {
 
         if (trainer != 0){
             logger.debug("Trainer created successfully with ID: {}", trainer);
-            System.out.println("Success! Your Trainder ID is: " + trainer);
+            System.out.println("Success! Your Trainer ID is: " + trainer);
         }
     }//add trainer
 

@@ -345,9 +345,9 @@ public class PokedexController {
                 trainersPokemonEntity.setDateObtained(LocalDate.now());
                 trainersPokemonEntity.setSeen(true);
 
-                giveNickname(trainersPokemonEntity);
-
                 int result = trainersPokemonService.catchPokemon(trainersPokemonEntity);
+
+                giveNickname(trainersPokemonEntity);
 
                 if(result == 0){
                     logger.debug("Trainer {}, has already caught {}",trainerId,pokemon.get().getName());
