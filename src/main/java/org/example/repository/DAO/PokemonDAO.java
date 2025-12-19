@@ -1,7 +1,10 @@
 package org.example.repository.DAO;
 
+import org.example.controller.PokedexController;
 import org.example.repository.entities.PokemonEntity;
 import org.example.util.ConnectionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,22 +13,7 @@ import java.util.Optional;
 
 public class PokemonDAO {
     private Connection connection = ConnectionHandler.getConnection();
-
-    public Integer create(PokemonEntity entity) throws SQLException {
-        String sql = "INSERT INTO pokemon (pokemon) VALUES (?) RETURNING id";
-
-        try(PreparedStatement stmt = connection.prepareStatement(sql)){
-
-            stmt.setString(1, entity.getName());
-
-            try(ResultSet rs = stmt.executeQuery()){
-                if(rs.next()){
-                    return rs.getInt("id");
-                }
-            }
-        }
-        return null;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
 
     public Optional<PokemonEntity> findById(Integer id) throws SQLException {
         String sql = "SELECT * FROM pokemon WHERE nid = ?";
@@ -35,6 +23,7 @@ public class PokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
+                    logger.info("Executing query statement.");
                     PokemonEntity pokemon = new PokemonEntity();
                     pokemon.setId(rs.getInt("nid"));
                     pokemon.setName(rs.getString("name"));
@@ -56,6 +45,7 @@ public class PokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
+                    logger.info("Executing query statement.");
                     PokemonEntity pokemon = new PokemonEntity();
                     pokemon.setId(rs.getInt("nid"));
                     pokemon.setName(rs.getString("name"));
@@ -83,6 +73,7 @@ public class PokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
+                    logger.info("Executing query statement.");
                     PokemonEntity pokemon = new PokemonEntity();
                     pokemon.setId(rs.getInt("nid"));
                     pokemon.setName(rs.getString("name"));
@@ -103,6 +94,8 @@ public class PokemonDAO {
         sql = prepareInput(i,sql);
 
         sql += " AND tp.seen = TRUE;";
+
+        logger.debug("Executing large query statement <{}>.", sql);
 
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, id);
@@ -130,6 +123,8 @@ public class PokemonDAO {
         sql = prepareInput(i,sql);
 
         sql += " AND (tp.seen = FALSE OR tp.seen IS NULL);";
+
+        logger.debug("Executing large query statement <{}>.", sql);
 
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, id);
@@ -165,6 +160,8 @@ public class PokemonDAO {
 
         //after the menu choice is accounted for, we add more here since we know they are filtering by caught pokemon
         sql += " AND tp.date_obtained IS NOT NULL;";
+
+        logger.debug("Executing large query statement <{}>.", sql);
 
         //preparing to connect to the database
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
@@ -296,6 +293,7 @@ public class PokemonDAO {
                 System.out.println("Something broke within PokemonDAO.");
             }
         }//switch
+        logger.info("Prepared input with case: {}.", i);
         return sql;
     }//prepare input
 
@@ -305,7 +303,7 @@ public class PokemonDAO {
         //preparing for input sanitization
         x += " ";
         int tempInt = 0;
-
+        logger.info("Preparing output with case: {}.", i);
         //switch for each type of user search
         switch (i){
             case 1 -> {

@@ -1,5 +1,9 @@
 package org.example.util;
 
+import org.example.controller.PokedexController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -9,6 +13,8 @@ import java.util.Properties;
 public class ConnectionHandler {
 
     private static Connection connection;
+
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
 
     static {
         if (connection == null){
@@ -32,8 +38,10 @@ public class ConnectionHandler {
                 );
 
             }catch(IOException | ClassNotFoundException e){
+                logger.debug("Failed to load database configuration.");
                 throw new RuntimeException("Failed to load database configuration");
             }catch(Exception e){
+                logger.debug("Another exception occured while trying to load database configuration.");
                 throw new RuntimeException(e);
             }//try catch
         }//if conn==null
@@ -41,6 +49,7 @@ public class ConnectionHandler {
 
     public static Connection getConnection() throws RuntimeException {
         if(connection == null){
+            logger.info("Connection was NULL.");
             throw new RuntimeException("Connection failed to setup correctly");
         }//if no conn
 

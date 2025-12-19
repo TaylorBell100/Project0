@@ -1,8 +1,11 @@
 package org.example.repository.DAO;
 
+import org.example.controller.PokedexController;
 import org.example.repository.entities.TPCompositeKey;
 import org.example.repository.entities.TrainersPokemonEntity;
 import org.example.util.ConnectionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import java.util.Optional;
 
 public class TrainersPokemonDAO {
     private Connection connection = ConnectionHandler.getConnection();
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
 
 
     public TPCompositeKey create(TrainersPokemonEntity entity) throws SQLException {
@@ -28,32 +32,13 @@ public class TrainersPokemonDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    logger.info("Executing query statement.");
                     return new TPCompositeKey(rs.getInt("tid"), rs.getInt("nid"));
                 }
             }
         }//try stmt
         return null;
     }
-
-    /*
-    public Integer create(TrainersPokemonEntity entity) throws SQLException {
-        String sql = "INSERT INTO trainer_pokemon (full_name, dept_id, loc_id) VALUES (?, ?, ?) RETURNING id";
-
-        try(PreparedStatement stmt = connection.prepareStatement(sql)){
-
-            stmt.setString(1, entity.getNickname());
-            stmt.setInt(2, entity.getTrainerId());
-            stmt.setInt(3, entity.getPokemonId());
-
-            try(ResultSet rs = stmt.executeQuery()){
-                if(rs.next()){
-                    return rs.getInt("id");
-                }
-            }
-        }
-        return null;
-    }//create
-    */
 
     public Optional<TrainersPokemonEntity> findById(TPCompositeKey id) throws SQLException {
         String sql = "SELECT * FROM trainer_pokemon WHERE tid = ? AND nid = ?";
@@ -65,6 +50,7 @@ public class TrainersPokemonDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
+                    logger.info("Executing query statement.");
                     TrainersPokemonEntity trainersPokemon = new TrainersPokemonEntity();
                     trainersPokemon.setTrainerId(rs.getInt("tid"));
                     trainersPokemon.setPokemonId(rs.getInt("nid"));
@@ -92,25 +78,22 @@ public class TrainersPokemonDAO {
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
-
+                logger.info("Executing query statement.");
                 TrainersPokemonEntity trainersPokemon = new TrainersPokemonEntity();
-                //trainersPokemon.setId(rs.getInt("id"));
-                trainersPokemon.setNickname(rs.getString("full_name"));
-                trainersPokemon.setTrainerId(rs.getInt("dept_id"));
-                trainersPokemon.setPokemonId(rs.getInt("loc_id"));
+                trainersPokemon.setNickname(rs.getString("nickname"));
+                trainersPokemon.setTrainerId(rs.getInt("tid"));
+                trainersPokemon.setPokemonId(rs.getInt("nid"));
+                trainersPokemon.setSeen(rs.getBoolean("seen"));
+                Date sqlDate = rs.getDate("date_obtained");
+                if (sqlDate != null) {
+                    trainersPokemon.setDateObtained(sqlDate.toLocalDate());
+                }
+                trainersPokemon.setPartySlot(rs.getInt("party_slot"));
 
                 trainersPokemons.add(trainersPokemon);
             }
         }
         return trainersPokemons;
-    }
-
-    public TrainersPokemonEntity updateById(TrainersPokemonEntity entity) throws SQLException {
-        return null;
-    }
-
-    public boolean deleteById(Integer id) throws SQLException {
-        return false;
     }
 
     public List<TrainersPokemonEntity> findAllByTrainerId(Integer trainerId) throws SQLException {
@@ -123,12 +106,17 @@ public class TrainersPokemonDAO {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-
+                logger.info("Executing query statement.");
                 TrainersPokemonEntity trainersPokemon = new TrainersPokemonEntity();
-                //trainersPokemon.setId(rs.getInt("id"));
-                trainersPokemon.setNickname(rs.getString("full_name"));
-                trainersPokemon.setTrainerId(rs.getInt("dept_id"));
-                trainersPokemon.setPokemonId(rs.getInt("loc_id"));
+                trainersPokemon.setNickname(rs.getString("nickname"));
+                trainersPokemon.setTrainerId(rs.getInt("tid"));
+                trainersPokemon.setPokemonId(rs.getInt("nid"));
+                trainersPokemon.setSeen(rs.getBoolean("seen"));
+                Date sqlDate = rs.getDate("date_obtained");
+                if (sqlDate != null) {
+                    trainersPokemon.setDateObtained(sqlDate.toLocalDate());
+                }
+                trainersPokemon.setPartySlot(rs.getInt("party_slot"));
 
                 trainersPokemons.add(trainersPokemon);
             }
@@ -144,7 +132,7 @@ public class TrainersPokemonDAO {
 
             stmt.setInt(1, entity.getTrainerId());
             stmt.setInt(2, entity.getPokemonId());
-
+            logger.info("Executing query statement.");
             return stmt.executeUpdate();
         }//try stmt
     }//see pokemon
@@ -157,7 +145,7 @@ public class TrainersPokemonDAO {
 
             stmt.setInt(1, entity.getTrainerId());
             stmt.setInt(2, entity.getPokemonId());
-
+            logger.info("Executing query statement.");
             return stmt.executeUpdate();
         }//try stmt
     }//see pokemon
@@ -169,7 +157,7 @@ public class TrainersPokemonDAO {
 
             stmt.setInt(1, entity.getTrainerId());
             stmt.setInt(2, entity.getPokemonId());
-
+            logger.info("Executing query statement.");
             return stmt.executeUpdate();
         }//try stmt
     }//release

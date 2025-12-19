@@ -1,9 +1,12 @@
 package org.example.repository.DAO;
 
+import org.example.controller.PokedexController;
 import org.example.repository.entities.PokemonEntity;
 import org.example.repository.entities.TrainerEntity;
 import org.example.repository.entities.TrainersPokemonEntity;
 import org.example.util.ConnectionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import java.util.Optional;
 
 public class TrainerDAO {
     private Connection connection = ConnectionHandler.getConnection();
+    private static final Logger logger = LoggerFactory.getLogger(PokedexController.class);
 
     public Integer create(TrainerEntity trainerEntity) throws SQLException {
 
@@ -23,6 +27,7 @@ public class TrainerDAO {
             stmt.setString(2, trainerEntity.getRegion());
 
             try(ResultSet rs = stmt.executeQuery()){
+                logger.info("Executing query statement.");
                 if(rs.next()){
                     return rs.getInt("tid");
                 }
@@ -38,6 +43,7 @@ public class TrainerDAO {
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, id);
 
+            logger.debug("Executing large query statement <{}>.", sql);
             List<TrainerEntity> results = executeDetailedQuery(stmt);
             return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
         }//try
@@ -52,6 +58,7 @@ public class TrainerDAO {
 
             while (rs.next()) {
                 Integer tid = rs.getInt("tid");
+                logger.info("Executing query statement.");
 
                 if (lastTid == null || !tid.equals(lastTid)) {
                     // New trainer row
@@ -87,6 +94,7 @@ public class TrainerDAO {
         String sql = "SELECT t.tid, t.name AS trainer_name, t.region, p.nid AS pokemon_id, p.name AS pokemon_name, tp.nickname, tp.party_slot, tp.date_obtained FROM Trainer t LEFT JOIN Trainer_Pokemon tp ON t.tid = tp.tid AND tp.date_obtained IS NOT NULL AND tp.party_slot IS NOT NULL LEFT JOIN Pokemon p ON tp.nid = p.nid ORDER BY t.tid, tp.party_slot;";
 
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            logger.debug("Executing large query statement <{}>.", sql);
             return executeDetailedQuery(stmt);
         }//try
     }//find all
@@ -102,15 +110,10 @@ public class TrainerDAO {
             stmt.setInt(3, trainerEntity.getId());
 
             //returns 0 if you dont have that poke, and 1 if successful
+            logger.info("Executing query statement.");
             return stmt.executeUpdate();
         }//try
     }//update by id
-
-
-    public boolean deleteById(Integer id) throws SQLException{
-        return false;
-    }
-
 
     public Optional<TrainerEntity> findByTrainerName(String trainerName) throws SQLException{
         String sql = "SELECT * FROM trainer WHERE name = ?";
@@ -120,6 +123,7 @@ public class TrainerDAO {
 
             try(ResultSet rs = stmt.executeQuery()){
                 if(rs.next()){
+                    logger.info("Executing query statement.");
                     TrainerEntity trainerEntity = new TrainerEntity();
                     trainerEntity.setId(rs.getInt("tid"));
                     trainerEntity.setName(rs.getString("name"));
@@ -142,6 +146,7 @@ public class TrainerDAO {
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, name);
 
+            logger.debug("Executing large query statement <{}>.", sql);
             return executeDetailedQuery(stmt);
         }//try stmt
     }//find all by name
@@ -156,6 +161,7 @@ public class TrainerDAO {
         try(PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, name);
 
+            logger.debug("Executing large query statement <{}>.", sql);
             return executeDetailedQuery(stmt);
         }//try stmt
     }//find all by region
@@ -174,6 +180,7 @@ public class TrainerDAO {
             stmt.setInt(3, pokemonId);
 
             //returns 0 if you dont have that poke, and 1 if successful
+            logger.info("Executing query statement.");
             return stmt.executeUpdate();
         }
     }//update nickname
@@ -193,6 +200,7 @@ public class TrainerDAO {
             stmt.setInt(2, trainerId);
             stmt.setInt(3, pokemonId);
 
+            logger.info("Executing query statement.");
             return stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -216,6 +224,7 @@ public class TrainerDAO {
             stmt.setInt(1, trainerId);
             stmt.setInt(2, pokemonId);
 
+            logger.info("Executing query statement.");
             return stmt.executeUpdate();
         }
     }//remove from Party
