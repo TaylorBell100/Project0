@@ -41,7 +41,7 @@ public class TrainersPokemonService {
             TPCompositeKey newId = trainersPokemonDAO.create(entity);
             return newId;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to make TrainersPokemon entity");
             return null;
         }
     }
@@ -55,7 +55,7 @@ public class TrainersPokemonService {
             }
             return trainersPokemon;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get TrainersPokemon entity by id: {}",id);
             return Optional.empty();
         }
     }
@@ -66,7 +66,7 @@ public class TrainersPokemonService {
             List<TrainersPokemonEntity> trainersPokemonEntities = trainersPokemonDAO.findAll();
             return trainersPokemonEntities;
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get all TrainersPokemon entities");
             return null;
         }
     }
@@ -76,28 +76,18 @@ public class TrainersPokemonService {
             logger.debug("Using trainersPokemonDAO to catch a pokemon");
             return trainersPokemonDAO.catchPokemon(entity);
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to catch a pokemon");
         }
         return 0;
     }
 
-    private List<TrainersPokemonEntity> getAllEntitiesByTrainerId(Integer trainerId) {
-        try{
-            logger.debug("Using trainersPokemonDAO to get party with: {}", trainerId);
-            List<TrainersPokemonEntity> trainersPokemonEntities = trainersPokemonDAO.findAllByTrainerId(trainerId);
-            return trainersPokemonEntities;
-        }catch(SQLException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public int seePokemon(TrainersPokemonEntity entity) {
         try{
             logger.debug("Using trainersPokemonDAO to see a pokemon");
             return trainersPokemonDAO.seePokemon(entity);
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to see a pokemon");
         }
         return 0;
     }
@@ -107,7 +97,7 @@ public class TrainersPokemonService {
             logger.debug("Using trainersPokemonDAO to release a pokemon");
             return trainersPokemonDAO.releasePokemon(entity);
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to release a TrainersPokemon");
         }
         return 0;
     }
@@ -135,7 +125,7 @@ public class TrainersPokemonService {
             return Optional.of(trainersPokemon);
 
         }catch(RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught Runtime exception trying to conver TrainersPokemon entity to Model");
             return Optional.empty();
         }
     }
@@ -146,7 +136,7 @@ public class TrainersPokemonService {
             Optional<TrainersPokemon> trainersPokemon = convertEntityToModel(getEntityById(id).get());
             return trainersPokemon;
         }catch(RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught Runtime exception trying to get Pokemon model by ID: {}",id);
             return Optional.empty();
         }
 

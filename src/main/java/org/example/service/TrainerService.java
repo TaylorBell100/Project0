@@ -33,7 +33,7 @@ public class TrainerService {
             Integer newId = trainerDAO.create(entity);
             return newId;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to make Trainer entity");
             return -1;
         }
     }
@@ -47,7 +47,7 @@ public class TrainerService {
             }
             return trainerEntity;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to find trainer by ID: {}",id);
             return Optional.empty();
         }
     }
@@ -58,7 +58,7 @@ public class TrainerService {
             List<TrainerEntity> trainerEntities = trainerDAO.findAll();
             return trainerEntities;
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying get all trainer entities");
             return null;
         }
     }
@@ -78,7 +78,7 @@ public class TrainerService {
             Optional<TrainerEntity> trainerEntity = trainerDAO.findByTrainerName(trainerName);
             return trainerEntity;
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get entity by trainers name: {}",name);
             return Optional.empty();
         }
     }
@@ -89,7 +89,7 @@ public class TrainerService {
             List<TrainerEntity> entities = trainerDAO.findAllByName(name);
             return entities;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get all trainers by name: {}",a);
             return null;
         }
     }
@@ -100,7 +100,7 @@ public class TrainerService {
             List<TrainerEntity> entities = trainerDAO.findAllByRegion(name);
             return entities;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get all trainers by region: {}",name);
             return null;
         }
     }
@@ -144,7 +144,7 @@ public class TrainerService {
             }
 
         }catch(RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught Runtime exception trying to convert Trainer entity to a model.");
             return Optional.empty();
         }
     }
@@ -163,7 +163,7 @@ public class TrainerService {
                 throw new RuntimeException("TrainerEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught Runtime exception trying to get model by trainer name: {}",trainerName);
             return Optional.empty();
         }
     }

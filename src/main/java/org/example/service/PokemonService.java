@@ -35,7 +35,7 @@ public class PokemonService {
             }
             return pokemonEntity;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to find TrainersPokemon entity by id: {}",id);
             return Optional.empty();
         }
     }//getbyid
@@ -47,7 +47,7 @@ public class PokemonService {
             List<PokemonEntity> pokeEntities = pokemonDAO.findAll(i, x);
             return pokeEntities;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get all Pokemon entities");
             return null;
         }
     }//getallentities
@@ -58,7 +58,7 @@ public class PokemonService {
             List<PokemonEntity> pokeEntities = pokemonDAO.findAllBySeen(i,x,tid);
             return pokeEntities;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get all pokemon entities by seen");
             return null;
         }
     }//getallentitiesbyseen
@@ -69,7 +69,7 @@ public class PokemonService {
             List<PokemonEntity> pokeEntities = pokemonDAO.findAllByUnseen(i,x,tid);
             return pokeEntities;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get all pokemon entities by unseen");
             return null;
         }
     }//getallentitiesbyseen
@@ -80,7 +80,7 @@ public class PokemonService {
             List<PokemonEntity> pokeEntities = pokemonDAO.findAllByCaught(i,x,tid);
             return pokeEntities;
         }catch(SQLException e){
-            e.printStackTrace();
+            logger.info("Caught SQL exception trying to get all pokemon entities by caught");
             return null;
         }
     }//getallentitiesbycaught
@@ -94,7 +94,7 @@ public class PokemonService {
             }
             return pokeEntity;
         }catch(SQLException | RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught exception trying to get pokemon entity by name: {}",name);
             return Optional.empty();
         }
     }
@@ -124,7 +124,7 @@ public class PokemonService {
                 throw new RuntimeException("PokemonEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught Runtime exception trying to get Pokemon model by id: {}",id);
             return Optional.empty();
         }
     }
@@ -143,7 +143,7 @@ public class PokemonService {
                 throw new RuntimeException("PokemonEntity not found");
             }
         }catch(RuntimeException e){
-            e.printStackTrace();
+            logger.info("Caught Runtime exception trying to get Pokemon model by name: {}",name);
             return Optional.empty();
         }
     }
