@@ -78,7 +78,7 @@ public class TrainerService {
             Optional<TrainerEntity> trainerEntity = trainerDAO.findByTrainerName(trainerName);
             return trainerEntity;
         }catch (SQLException e){
-            logger.info("Caught SQL exception trying to get entity by trainers name: {}",name);
+            logger.info("Caught SQL exception trying to get entity by trainers name: {}",trainerName);
             return Optional.empty();
         }
     }
@@ -89,7 +89,7 @@ public class TrainerService {
             List<TrainerEntity> entities = trainerDAO.findAllByName(name);
             return entities;
         }catch(SQLException e){
-            logger.info("Caught SQL exception trying to get all trainers by name: {}",a);
+            logger.info("Caught SQL exception trying to get all trainers by name: {}",name);
             return null;
         }
     }
